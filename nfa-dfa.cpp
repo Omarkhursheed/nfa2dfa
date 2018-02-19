@@ -235,10 +235,10 @@ int main(int argc, char const *argv[])
 
 	cout<<numberOfTransitions<<endl;
 	//NFA Transition table
-	cout << "NFA Transition table" << endl;
+	/*cout << "NFA Transition table" << endl;
 	for(int i = 0; i < numberOfTransitions-1; i++){
 		cout << transitionTable[i][0] << "\t" << transitionTable[i][1] << "\t" << transitionTable[i][2] << endl;
-	}
+	}*/
 
 	//Computation of the DFA
 
@@ -278,14 +278,21 @@ int main(int argc, char const *argv[])
 	vector<string>::iterator i;
 	outputfile << "Q = {";	
 	for(i = outputStates.begin(); i != outputStates.end(); i++){
-		if(i !=outputStates.end()-1){
-			outputfile << *i << ",";
-		
-		} else{
-			outputfile << *i;	
+		if(i !=outputStates.end()-1 ){
+			if(*i != ""){
+				outputfile << *i << ",";
+			} else {
+				outputfile << "{}" << ",";
+			}			
+		} else {
+			if(*i != ""){
+				outputfile << *i;	
+			} else {
+				outputfile << "{}";
+			}
 		}
 		
-		}
+	}
 	outputfile <<"}" <<endl;
 	outputfile << "Init = {"<< DFAInitialState << "}\n";
 	outputfile << "F = {";
@@ -347,8 +354,12 @@ int main(int argc, char const *argv[])
 	cout << endl<< "Test: " << calculate("q1-q3","a"); 
 	for(i = outputStates.begin(); i != outputStates.end(); i++){
 		for(int j = 0; j < numberOfAlphabets; j++){
-			outputfile<< "Delta("<<*i<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;
-		}
+			if(*i != ""){
+				outputfile<< "Delta("<<*i<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;	
+			} else {
+				outputfile<< "Delta("<<"{}"<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;	
+			}
+			}
 	}
 
 	cout << "State" << "\t\t";
