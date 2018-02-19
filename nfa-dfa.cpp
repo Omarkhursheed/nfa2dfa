@@ -53,7 +53,7 @@ string epsilon(string state){
 
 			}
 		}
-		cout<<endl;
+		//cout<<endl;
 		set<int>::iterator it;
 		for(it = bla.begin(); it != bla.end(); it++){
 			int f = *it;
@@ -64,8 +64,8 @@ string epsilon(string state){
 				}
 				//cout<<*it<<" "; 
 		}
-		cout<<endl;
-		cout<<temp<<endl;
+		//cout<<endl;
+		//cout<<temp<<endl;
 		return temp;
 	} else {
 		string temp = "";
@@ -120,7 +120,7 @@ string calculate(string state, string alphabet){
 		stringstream ss(state);
 		string token;
 		while(getline(ss, token, '-')){
-			cout<<token<<endl;
+			//cout<<token<<endl;
 			for(int i = 0; i < numberOfTransitions; i++){
 				if (transitionTable[i][0] == token && transitionTable[i][1] == alphabet && transitionTable[i][2] != "_"){
 					bla.insert(stoi(transitionTable[i][2].substr(1,transitionTable[i][2].length()-1)));
@@ -248,16 +248,15 @@ int main(int argc, char const *argv[])
 	outputStates.push_back(DFAInitialState);
 	outputInitialState.push_back(DFAInitialState);
 	//Using the DFA initial state obtained, find the rest of the states obtained
-	cout << DFAInitialState << endl;
-	cout<<calculate("q0-q2","b")<<endl;
+	//cout << DFAInitialState << endl;
+	//cout<<calculate("q0-q2","b")<<endl;
 	size = 1;
 	//Write to the output file (temporary printing)
 	while(tempCount < size){
 		calculateStates(outputStates[tempCount++]);
-		cout<<tempCount<<" iteration\n";
+		//cout<<tempCount<<" iteration\n";
 		size = outputStates.size();
 	}
-	string outputStateTable[outputStates.size()][numberOfAlphabets+1];
 	/*for(int i = 0; i < size; size++){
 		for(int j = 0; j < numberOfAlphabets+1; j++){
 			if(j==0){
@@ -267,25 +266,105 @@ int main(int argc, char const *argv[])
 			}
 		}
 	}*/
+	
 
-	cout << "State" << "\t";
-	for(int j = 0; j < numberOfAlphabets; j++){
-		cout << inputDictionary[j] << "\t"; 
-	}
-	for(int i = 0; i < size; size++){
+	/*for(int i = 0; i < size; size++){
 		for(int j = 0; j < numberOfAlphabets+1; j++){
 			cout << outputStateTable[i][j] << "\t";
 		}
 		cout << endl;
-	}
+	}*/
 
 	vector<string>::iterator i;
-	/*for(i = outputStates.begin(); i != outputStates.end(); i++){
-		cout << *i << endl;
-	}*/
+	outputfile << "Q = {";	
+	for(i = outputStates.begin(); i != outputStates.end(); i++){
+		if(i !=outputStates.end()-1){
+			outputfile << *i << ",";
+		
+		} else{
+			outputfile << *i;	
+		}
+		
+		}
+	outputfile <<"}" <<endl;
+	outputfile << "Init = {"<< DFAInitialState << "}\n";
+	outputfile << "F = {";
+
+	for(i = outputStates.begin(); i != outputStates.end(); i++){
+			string temp1 = *i;
+			string token;
+			stringstream ss(temp1);
+			while(getline(ss, token, '-')){
+				vector<string>::iterator j;
+				for(j = inputFinalStates.begin(); j != inputFinalStates.end(); j++){
+					if(token == *j){
+						outputFinalStates.push_back(temp1);
+						
+				}
+			} 
+		}	
+	}
+	for(i = outputFinalStates.begin(); i != outputFinalStates.end(); i++){
+		if(i != outputFinalStates.end()-1){
+			outputfile << *i << ",";	
+		
+		} else {
+			outputfile << *i;
+		}
+		}
+	outputfile <<"}" <<endl;
 	//cout<<calculate("q0","b")<<endl;
-	
+	outputfile << "Sigma = {";
+	for(int i = 0; i < numberOfAlphabets; i++){
+		if(i != numberOfAlphabets-1){
+			outputfile << inputDictionary[i]<<",";
+			
+		}
+		else
+		{
+			outputfile << inputDictionary[i];
+		}
+	}
+	outputfile << "}\n";
 	inputfile.close();
+	string outputStateTable[outputStates.size()][numberOfAlphabets+1];
+	for(int i = 0; i < outputStates.size(); i++){
+		for(int j = 0; j < numberOfAlphabets+1; j++){
+			if(j==0){
+				outputStateTable[i][j] = outputStates[i];
+				//outputfile << "Delta("<<outputStates[i] << ",";
+			} else {
+				outputStateTable[i][j] = calculate(outputStateTable[i][0], inputDictionary[j-1]);
+				if(outputStateTable[i][j]==""){
+					outputStateTable[i][j]="_";
+				}
+				//outputfile << outputStateTable[i][j] << ",";
+
+			}
+		}
+	}
+
+	cout << endl<< "Test: " << calculate("q1-q3","a"); 
+	for(i = outputStates.begin(); i != outputStates.end(); i++){
+		for(int j = 0; j < numberOfAlphabets; j++){
+			outputfile<< "Delta("<<*i<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;
+		}
+	}
+
+	cout << "State" << "\t\t";
+	for(int j = 0; j < numberOfAlphabets; j++){
+		cout << inputDictionary[j] << "\t\t"; 
+	}
+	cout << endl << endl;
+	for(int i = 0; i < outputStates.size(); i++){
+
+		for(int j = 0; j < numberOfAlphabets+1; j++){
+				cout << outputStateTable[i][j] << "\t\t";		
+		}
+		cout << endl;
+	}
+	cout << endl;
+	//cout << outputStates[outputStateTable.size()-2][numberOfAlphabets-1]<< outputStateTable[outputStates.size()-2][numberOfAlphabets] << endl;
 	outputfile.close();
 	return 0;
 }
@@ -299,9 +378,9 @@ void calculateStates(string state){
 		string temp = epsilon(calculate(state, inputDictionary[i]));
 		if(find(outputStates.begin(), outputStates.end(), temp) != outputStates.end()){}
 		else {
-			outputStates.push_back(temp);
-			
 
+			
+			outputStates.push_back(temp);
 		}
 	}
 	/*if(outputStates.size() > size){

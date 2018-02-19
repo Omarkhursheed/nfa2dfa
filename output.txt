@@ -1,0 +1,12 @@
+Q = {q0,q1-q2,,q1-q3}
+Init = {q0}
+F = {q0,q1-q2,q1-q3}
+Sigma = {a,b}
+Delta(q0, a) = {q1-q2}
+Delta(q0, b) = {}
+Delta(q1-q2, a) = {q1-q2}
+Delta(q1-q2, b) = {q1-q3}
+Delta(, a) = {}
+Delta(, b) = {}
+Delta(q1-q3, a) = {q1-q2}
+Delta(q1-q3, b) = {}
