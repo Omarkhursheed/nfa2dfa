@@ -1,9 +1,14 @@
-3,2
+3,4
 Q= {q0,q1,q2}
 I= {q0}
 F= {q2}
-Sigma = {a,b}
+Sigma = {a,b,c,E}
 Delta(q0,a)=q0
-Delta(q0,b)=q0
 Delta(q0,b)=q1
-Delta(q1,a)=q2
+Delta(q0,c)=q2
+Delta(q1,E)=q0
+Delta(q1,a)=q1
+Delta(q1,b)=q2
+Delta(q2,E)=q1
+Delta(q2,a)=q2
+Delta(q2,c)=q0
