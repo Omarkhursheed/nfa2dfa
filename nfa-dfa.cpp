@@ -93,6 +93,7 @@ string epsilon(string state){
 }
 
 string calculate(string state, string alphabet){
+	//cout<<"new"<<endl;
 	set<int> bla;
 	if(state.find('-') == string::npos){
 		int count = 0;
@@ -130,12 +131,14 @@ string calculate(string state, string alphabet){
 		set<int>::iterator it;
 		for(it = bla.begin(); it != bla.end(); it++){
 			int f = *it;
+			//cout<<f<<" ";
 			if(it == bla.begin()){
 				temp += "q" + to_string(f);
 			} else {
 				temp += "-q" + to_string(f);
 				} 
 		}
+		//cout<<endl; 
 		return temp;
 	}	
 }
@@ -173,34 +176,47 @@ int main(int argc, char const *argv[])
 			while(getline(ss, token, ',')){
 				if(count2 == 0){
 					numberOfStates = stoi(token);
-					cout << numberOfStates;
+					//cout << numberOfStates;
 				} else if (count2 == 1){
 					numberOfAlphabets = stoi(token);
-					cout << numberOfAlphabets;
+
+					//cout << numberOfAlphabets;
 				}
 				count2++;
 			}
-		} else if(counter == 1){									// Get a list of states
+		} else if(counter == 1){
+			line.erase(0,4);
+			line.erase(line.end()-1,line.end());
+			//cout << endl << line << endl;									// Get a list of states
 			stringstream ss(line);
 			string token;
 			while(getline(ss, token, ',')){
 
-				cout << token;
+				//cout << token;
 				inputStates.push_back(token);
 			}
 		} else if(counter == 2){									//get initial state
+			line.erase(0,4);
+			line.erase(line.end()-1,line.end());
 
-			cout << line;
+			//cout << line << endl;
 			inputInitialState.push_back(line);
 		} else if(counter == 3){									//get the list of final states
+			line.erase(0,4);
+			line.erase(line.end()-1,line.end());
 
+			//cout << line << endl;
 			stringstream ss(line);
 			string token;
 			while(getline(ss, token, ',')){			
 
 				inputFinalStates.push_back(token);
 			}
-		} else if(counter == 4){									//get the list of alphabets
+		} else if(counter == 4){
+			line.erase(0,9);
+			line.erase(line.end()-1,line.end());
+
+			//cout << line << endl;									//get the list of alphabets
 			stringstream ss(line);
 			string token;
 			int x = 0;
@@ -210,7 +226,13 @@ int main(int argc, char const *argv[])
 					inputDictionary.push_back(token);
 				
 			}
-		} else if(counter >= 5){									//Split by delimiter and create the transition table for NFA
+		} else if(counter >= 5){
+			line.erase(0,6);
+			//cout <<"test" <<line << endl;
+			line.replace(4,2,",");
+			//line.erase(line.end()-1,line.end());
+
+			//cout << endl << line << endl;									//Split by delimiter and create the transition table for NFA
 			stringstream ss(line);
 			string token;
 			int k = 0;
@@ -233,7 +255,7 @@ int main(int argc, char const *argv[])
 		counter++;
 	}
 
-	cout<<numberOfTransitions<<endl;
+	//cout<<numberOfTransitions<<endl;
 	//NFA Transition table
 	/*cout << "NFA Transition table" << endl;
 	for(int i = 0; i < numberOfTransitions-1; i++){
@@ -332,6 +354,7 @@ int main(int argc, char const *argv[])
 			outputfile << inputDictionary[i];
 		}
 	}
+	//cout<<epsilon(calculate("q1-q3","a"))<<endl;
 	outputfile << "}\n";
 	inputfile.close();
 	string outputStateTable[outputStates.size()][numberOfAlphabets+1];
@@ -351,30 +374,30 @@ int main(int argc, char const *argv[])
 		}
 	}
 
-	cout << endl<< "Test: " << calculate("q1-q3","a"); 
+	//cout << endl<< "Test: " << calculate("q1-q3","a"); 
 	for(i = outputStates.begin(); i != outputStates.end(); i++){
 		for(int j = 0; j < numberOfAlphabets; j++){
 			if(*i != ""){
-				outputfile<< "Delta("<<*i<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;	
+				outputfile<< "Delta("<<*i<<", "<<inputDictionary[j]<<") = {"<< epsilon(calculate(*i, inputDictionary[j]))<< "}"<< endl;	
 			} else {
-				outputfile<< "Delta("<<"{}"<<", "<<inputDictionary[j]<<") = {"<< calculate(*i, inputDictionary[j])<< "}"<< endl;	
+				outputfile<< "Delta("<<"{}"<<", "<<inputDictionary[j]<<") = {"<< epsilon(calculate(*i, inputDictionary[j]))<< "}"<< endl;	
 			}
 			}
 	}
 
-	cout << "State" << "\t\t";
-	for(int j = 0; j < numberOfAlphabets; j++){
+	//cout << "State" << "\t\t";
+	/*for(int j = 0; j < numberOfAlphabets; j++){
 		cout << inputDictionary[j] << "\t\t"; 
 	}
-	cout << endl << endl;
-	for(int i = 0; i < outputStates.size(); i++){
+	cout << endl << endl;*/
+	/*for(int i = 0; i < outputStates.size(); i++){
 
 		for(int j = 0; j < numberOfAlphabets+1; j++){
 				cout << outputStateTable[i][j] << "\t\t";		
 		}
 		cout << endl;
 	}
-	cout << endl;
+	cout << endl;*/
 	//cout << outputStates[outputStateTable.size()-2][numberOfAlphabets-1]<< outputStateTable[outputStates.size()-2][numberOfAlphabets] << endl;
 	outputfile.close();
 	return 0;

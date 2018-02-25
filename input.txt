@@ -1,9 +1,9 @@
 3,2
-q0,q1,q2
-q0
-q2
-a,b
-q0,a,q0
-q0,b,q0
-q0,b,q1
-q1,a,q2
+Q= {q0,q1,q2}
+I= {q0}
+F= {q2}
+Sigma = {a,b}
+Delta(q0,a)=q0
+Delta(q0,b)=q0
+Delta(q0,b)=q1
+Delta(q1,a)=q2
